@@ -7,6 +7,7 @@ set_time_limit (0);
 $mtime = explode (' ', microtime ());
 $tstart = $mtime[1] + $mtime[0];
 
+// caching generated files here
 $cache = './pattern/';
 
 if((!isset($_GET['baseline_height']) || !is_numeric($_GET['baseline_height']) || $_GET['baseline_height'] > 50 || $_GET['baseline_height'] < 1)
@@ -28,7 +29,8 @@ $modul_height = $_GET['baseline_height'] * $_GET['modul_baselines'];
 
 $pat = new PhotoshopPattern ();
 
-$grid = $pat->CreatePattern ($total_width, $total_height, 'Modular Grig (baseline height='.$_GET['baseline_height'].'px, modul width='.$_GET['modul_width'].'px, modul height='.$_GET['modul_baselines'].'bl, margin='.$_GET['baseline_height'].'px) get more grids from grid.xizzzy.ru');
+// New pattern name "ModularGrid [xx-xx-xx-xx]"
+$grid = $pat->CreatePattern ($total_width, $total_height, 'ModularGrig ['.$_GET['baseline_height'].'-'.$_GET['modul_width'].'-'.$_GET['modul_baselines'].'-'.$_GET['margin'].']');
 
 $sides  = $pat->ColorAllocate ($grid, 'fff2f2');
 $modul  = $pat->ColorAllocate ($grid, 'ffe6e6');
@@ -53,14 +55,26 @@ $pattern_file = $cache.$pattern_file;
 $pattern_file_nogzip = $pattern_file.'.nogzip.pat';
 $pattern_file .= '.pat';
 
+// Generate and save to cache
 $pat->GetPatternFile ($pattern_file_nogzip);
 $pattern_data = $pat->GetPatternFile ();
+
+header ('Content-Type: application/octet-stream');
+
+// Compress (gzip) and save to cache
 $pattern_gzip = gzencode ($pattern_data, 9);
 file_put_contents ($pattern_file, $pattern_gzip);
 
-header ('Content-Type: application/octet-stream');
-header ('Content-Encoding: gzip');
-echo $pattern_gzip;
+// check Accept-Encoding
+if(isset($_GET['encode']) && $_GET['encode'] == "gzip")
+{
+	header ('Content-Encoding: gzip');
+	echo $pattern_gzip;
+}
+else
+{
+	echo $pattern_data;
+}
 
 #passthru ('gzip -cnk9 '.$pattern_file_nogzip.' > '.$pattern_file);
 #readfile ($pattern_file);

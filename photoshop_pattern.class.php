@@ -15,6 +15,8 @@ class PhotoshopPattern
 			$this->version = $version;
 	}
 
+	// CreatePattern (width, height, patternName, type)
+	// Return patternID
 	public function CreatePattern ($width, $height, $name, $type = 2)
 	{
 		$id = count ($this->pattern);
@@ -71,6 +73,8 @@ class PhotoshopPattern
 		return $id;
 	}
 
+	// ColorAllocate (patternID, RGBColor)
+	// Return colorID
 	public function ColorAllocate ($id, $rgb)
 	{
 		if (!preg_match ('/^[A-Fa-f0-9]{6}$/', $rgb, $matches))
@@ -92,6 +96,7 @@ class PhotoshopPattern
 		return false;
 	}
 
+	// DrawRect (patternID, startPositionX, startPositionY, width, height, colorID)
 	public function DrawRect ($id, $x1, $y1, $width, $height, $color)
 	{
 		$x2 = $x1 + $width;
@@ -115,6 +120,7 @@ class PhotoshopPattern
 		return true;
 	}
 
+	// DrawPixel (patternID, startPositionX, startPositionY, colorID)
 	public function DrawPixel ($id, $x, $y, $color)
 	{
 		$this->pattern[$id]['channel'][0]['data'][$y * $this->pattern[$id]['width'] + $x] = pack ('C', $color);
@@ -122,6 +128,8 @@ class PhotoshopPattern
 		return true;
 	}
 
+	// DuplicatePattern (patternID, patternName)
+	// Return patternID
 	public function DuplicatePattern ($id, $name = false)
 	{
 		$duplicated_pattern_id = count ($this->pattern);
@@ -134,6 +142,7 @@ class PhotoshopPattern
 		return $duplicated_pattern_id;
 	}
 
+	// DeletePattern (patternID)
 	public function DeletePattern ($id)
 	{
 		unset ($this->pattern[$id]);
@@ -143,13 +152,18 @@ class PhotoshopPattern
 		return true;
 	}
 
+	// SetPatternName (patternID, patternName)
 	public function SetPatternName ($id, $name)
 	{
 		$this->pattern[$id]['name'] = iconv ('UTF-8', 'UCS-2', $name) . "\x00\x00";	// Convert pattern name to UCS-2
 
 		$this->changed = true;
+
+		return true;
 	}
 
+	// GetPatternFile (filename)
+	// Return file
 	public function GetPatternFile ($file = false)
 	{
 		if ($this->changed)
@@ -221,7 +235,10 @@ class PhotoshopPattern
 		}
 
 		if ($file)
+		{
 			file_put_contents ($file, $this->rawdata);
+			return true;
+		}
 		else
 		{
 			#header ('Content-Type: application/octet-stream');
