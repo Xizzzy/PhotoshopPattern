@@ -30,7 +30,7 @@ $modul_height = $_GET['baseline_height'] * $_GET['modul_baselines'];
 $pat = new PhotoshopPattern ();
 
 // New pattern name "ModularGrid [xx-xx-xx-xx]"
-$grid = $pat->CreatePattern ($total_width, $total_height, 'ModularGrig ['.$_GET['baseline_height'].'-'.$_GET['modul_width'].'-'.$_GET['modul_baselines'].'-'.$_GET['margin'].']');
+$grid = $pat->CreatePattern ($total_width, $total_height, 'ModularGrid ['.$_GET['baseline_height'].'-'.$_GET['modul_width'].'-'.$_GET['modul_baselines'].'-'.$_GET['margin'].']');
 
 $sides  = $pat->ColorAllocate ($grid, 'fff2f2');
 $modul  = $pat->ColorAllocate ($grid, 'ffe6e6');
