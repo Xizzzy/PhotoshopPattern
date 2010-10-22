@@ -1,5 +1,14 @@
 <?php
 
+/**
+ *
+ * Pattern generator for Adobe Photoshop by Xizzzy.
+ * http://xizzzy.ru/
+ * xizzzy@gmail.com
+ * 2010y
+ *
+ */
+
 class PhotoshopPattern
 {
 
